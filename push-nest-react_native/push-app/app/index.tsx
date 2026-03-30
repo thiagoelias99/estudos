@@ -40,7 +40,7 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login 2</Text>
+      <Text style={styles.title}>Login</Text>
 
       <TextInput
         style={styles.input}

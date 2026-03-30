@@ -21,9 +21,11 @@ export class AppController {
 
   @Post("register-device")
   @HttpCode(200)
-  registerDevice(
+  async registerDevice(
     @Body() body: { userName: string, token: string, platform: string }
   ) {
+    console.log("registerDevice", body)
+
     if (!body.userName || !body.token || !body.platform) {
       throw new BadRequestException("userName, token, and platform are required")
     }

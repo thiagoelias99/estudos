@@ -5,17 +5,19 @@ import { PrismaService } from "./prisma/prisma.service"
 export class AppService {
   constructor(private prisma: PrismaService) { }
 
-  login({ userName }: { userName: string }): string {
+  async login({ userName }: { userName: string }): Promise<string> {
 
     console.log("Login attempt for user:", userName)
 
-    const user = this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { userName }
     })
 
+    console.log("User found in database:", user)
+
     if (!user) {
       console.log("User not found, creating new user:", userName)
-      this.prisma.user.create({
+      await this.prisma.user.create({
         data: { userName }
       })
     }

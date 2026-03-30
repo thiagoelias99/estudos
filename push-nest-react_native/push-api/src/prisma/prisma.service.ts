@@ -8,6 +8,9 @@ export class PrismaService extends PrismaClient {
 
   constructor() {
     const connectionString = process.env.DATABASE_URL
+
+    console.log("Initializing PrismaService with connection string:", connectionString) // Adicione este log para verificar o valor da variável de ambientes
+
     if (!connectionString) {
       throw new Error("DATABASE_URL environment variable is not set.")
     }

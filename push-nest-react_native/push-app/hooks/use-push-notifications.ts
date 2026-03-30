@@ -62,14 +62,14 @@ async function requestPermission() {
 async function registerDevice(userId: string, token: string) {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL as string
 
-  console.log('Registrando device no backend...', { userId, token, platform: Platform.OS })
+  console.log('Registrando device no backend...', { userName: userId, token, platform: Platform.OS })
 
   try {
     await fetch(`${apiUrl}/register-device`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userId,
+        userName: userId,
         token,
         platform: Platform.OS,
       }),
