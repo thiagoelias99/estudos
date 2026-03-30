@@ -14,3 +14,10 @@ Teste simple de notificacao push para android (firebase cloud messaging).
 - Executa npm run android
 - Visulizar o token na tela e utilizar na api
 
+- para build de producao android e teste com http inserir no manifest
+
+<application
+android:usesCleartextTraffic="true"
+...
+
+>

@@ -41,6 +41,7 @@ export default function Index() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>{process.env.EXPO_PUBLIC_API_URL}</Text>
 
       <TextInput
         style={styles.input}
