@@ -7,11 +7,14 @@ export class AppService {
 
   login({ userName }: { userName: string }): string {
 
+    console.log("Login attempt for user:", userName)
+
     const user = this.prisma.user.findUnique({
       where: { userName }
     })
 
     if (!user) {
+      console.log("User not found, creating new user:", userName)
       this.prisma.user.create({
         data: { userName }
       })
@@ -19,25 +22,42 @@ export class AppService {
 
     // Criar um token JWT para o usuário somente para fins de demonstração, sem segurança real
     const token = Buffer.from(userName).toString('base64')
+
+    console.log("Generated token for user:", token)
+
     return token
   }
 
   async registerDevice({ userName, token, platform }: { userName: string, token: string, platform: string }): Promise<string> {
+    console.log("Registering device for user:", userName, "with token:", token, "and platform:", platform)
+
+    // username precisa ser decodificado do token para encontrar o usuário correto
+    const decodedUserName = Buffer.from(userName, 'base64').toString('utf-8')
+
     const user = await this.prisma.user.findUnique({
-      where: { userName }
+      where: { userName: decodedUserName }
     })
 
     if (!user) {
       throw new Error("User not found")
     }
 
-    // Verificar se o dispositivo já está registrado para o usuário
-    const existingDevice = await this.prisma.devices.findUnique({
+    const existingToken = await this.prisma.devices.findUnique({
       where: { token }
     })
 
-    if (existingDevice) {
-      return "Device already registered"
+    if (existingToken) {
+      // Atualiza usuário e plataforma do token existente
+      await this.prisma.devices.update({
+        where: { token },
+        data: {
+          userId: user.id,
+          platform
+        }
+      })
+
+      console.log("Device token updated for user:", decodedUserName)
+      return "Device token updated successfully"
     }
 
     await this.prisma.devices.create({
@@ -48,6 +68,24 @@ export class AppService {
       }
     })
 
+    console.log("Device registered successfully for user:", decodedUserName)
+
     return "Device registered successfully"
+  }
+
+  async getUserDevices(userId: string) {
+    return this.prisma.devices.findMany({
+      where: { userId }
+    })
+  }
+
+  async removeDevice(token: string) {
+    await this.prisma.devices.delete({
+      where: { token }
+    })
+
+    console.log("Device removed successfully for token:", token)
+
+    return "Device removed successfully"
   }
 }

@@ -7,14 +7,16 @@ export class AppController {
 
   @Post("login")
   @HttpCode(200)
-  login(
+  async login(
     @Body() body: { userName: string }
-  ): string {
+  ) {
     if (!body.userName) {
       throw new BadRequestException("userName is required")
     }
 
-    return this.appService.login(body)
+    const token = await this.appService.login(body)
+
+    return { token }
   }
 
   @Post("register-device")
